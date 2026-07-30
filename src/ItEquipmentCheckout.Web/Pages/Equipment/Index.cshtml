@@ -1,0 +1,95 @@
+@page
+@model ItEquipmentCheckout.Web.Pages.Equipment.IndexModel
+@{
+  ViewData["Title"] = "Equipment";
+}
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Asset register</p>
+    <h1>Equipment</h1>
+    <p>Search inventory, see current holders, and manage asset state.</p>
+  </div>
+  <div class="button-row">
+    <a class="button button-secondary" href="/api/equipment/export">Export CSV</a>
+    <a class="button button-primary" asp-page="/Equipment/Create">Add equipment</a>
+  </div>
+</div>
+
+<section class="panel filter-panel">
+  <form method="get" class="filter-grid">
+    <label>
+      Search
+      <input asp-for="Search" placeholder="Inventory, serial, model, employee" />
+    </label>
+    <label>
+      Category
+      <select asp-for="Category" asp-items="Html.GetEnumSelectList<EquipmentCategory>()">
+        <option value="">All categories</option>
+      </select>
+    </label>
+    <label>
+      Status
+      <select asp-for="Status" asp-items="Html.GetEnumSelectList<EquipmentStatus>()">
+        <option value="">All statuses</option>
+      </select>
+    </label>
+    <label class="checkbox-label">
+      <input asp-for="Overdue" />
+      Overdue only
+    </label>
+    <button class="button button-primary" type="submit">Apply filters</button>
+    <a class="button button-ghost" asp-page="/Equipment/Index">Clear</a>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="panel-heading">
+    <h2>@Model.Items.Count item(s)</h2>
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Import" class="import-form">
+      <label class="file-button">
+        <span>Choose CSV file</span>
+        <input asp-for="ImportFile" accept=".csv,text/csv" />
+      </label>
+      <button class="button button-secondary" type="submit">Import</button>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Inventory</th>
+          <th>Equipment</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Assigned to</th>
+          <th>Return date</th>
+        </tr>
+      </thead>
+      <tbody>
+      @foreach (ItEquipmentCheckout.Core.Entities.Equipment item in Model.Items)
+      {
+        Checkout? active = item.Checkouts.SingleOrDefault();
+        bool overdue = active?.IsOverdue(DateTime.UtcNow) == true;
+        <tr>
+          <td>
+            <a asp-page="/Equipment/Details" asp-route-id="@item.Id"><strong>@item.InventoryNumber</strong></a>
+            <small>@item.SerialNumber</small>
+          </td>
+          <td>@item.Manufacturer @item.Model</td>
+          <td>@UiText.Category(item.Category)</td>
+          <td><span class="status @UiText.StatusClass(item.Status)">@UiText.Status(item.Status)</span></td>
+          <td>@(active?.Employee.FullName ?? "—")</td>
+          <td class="@(overdue ? "text-danger" : "")">
+            @(active?.PlannedReturnDate.ToString("MMM d, yyyy") ?? "—")
+            @if (overdue)
+            {
+              <small>Overdue</small>
+            }
+          </td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+</section>

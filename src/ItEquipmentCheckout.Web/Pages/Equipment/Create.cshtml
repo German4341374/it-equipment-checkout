@@ -1,0 +1,57 @@
+@page
+@model ItEquipmentCheckout.Web.Pages.Equipment.CreateModel
+@{
+  ViewData["Title"] = "Add equipment";
+}
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">New asset</p>
+    <h1>Add equipment</h1>
+    <p>Create a uniquely identified item ready for checkout.</p>
+  </div>
+  <a class="button button-ghost" asp-page="/Equipment/Index">Back to equipment</a>
+</div>
+
+<form method="post" class="panel form-panel">
+  <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+  <div class="form-grid">
+    <label>
+      Inventory number
+      <input asp-for="Input.InventoryNumber" placeholder="LT-0042" />
+      <span asp-validation-for="Input.InventoryNumber"></span>
+    </label>
+    <label>
+      Serial number
+      <input asp-for="Input.SerialNumber" placeholder="SERIAL-DEMO-0042" />
+      <span asp-validation-for="Input.SerialNumber"></span>
+    </label>
+    <label>
+      Category
+      <select asp-for="Input.Category" asp-items="Html.GetEnumSelectList<EquipmentCategory>()"></select>
+      <span asp-validation-for="Input.Category"></span>
+    </label>
+    <label>
+      Manufacturer
+      <input asp-for="Input.Manufacturer" />
+      <span asp-validation-for="Input.Manufacturer"></span>
+    </label>
+    <label>
+      Model
+      <input asp-for="Input.Model" />
+      <span asp-validation-for="Input.Model"></span>
+    </label>
+    <label>
+      Expected return period
+      <span class="input-suffix">
+        <input asp-for="Input.ExpectedReturnDays" min="1" max="365" />
+        <span>days</span>
+      </span>
+      <span asp-validation-for="Input.ExpectedReturnDays"></span>
+    </label>
+  </div>
+  <div class="form-actions">
+    <a class="button button-ghost" asp-page="/Equipment/Index">Cancel</a>
+    <button class="button button-primary" type="submit">Add equipment</button>
+  </div>
+</form>

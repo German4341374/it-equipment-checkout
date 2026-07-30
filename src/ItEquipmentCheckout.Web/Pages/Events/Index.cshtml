@@ -1,0 +1,46 @@
+@page
+@model ItEquipmentCheckout.Web.Pages.Events.IndexModel
+@{
+  ViewData["Title"] = "Event log";
+}
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Audit trail</p>
+    <h1>Equipment events</h1>
+    <p>Chronological history of checkout, return, repair, and lifecycle changes.</p>
+  </div>
+  <form method="get" class="compact-search">
+    <select asp-for="Type" asp-items="Html.GetEnumSelectList<EquipmentEventType>()">
+      <option value="">All event types</option>
+    </select>
+    <button class="button button-secondary" type="submit">Filter</button>
+  </form>
+</div>
+
+<section class="panel">
+  <ol class="timeline timeline-wide">
+  @foreach (EquipmentEvent equipmentEvent in Model.Events)
+  {
+    <li>
+      <span class="timeline-dot"></span>
+      <div class="event-row">
+        <div>
+          <strong>@UiText.EventType(equipmentEvent.Type)</strong>
+          <a asp-page="/Equipment/Details" asp-route-id="@equipmentEvent.EquipmentId">
+            @equipmentEvent.Equipment.InventoryNumber
+          </a>
+          <p>@equipmentEvent.Description</p>
+        </div>
+        <div class="event-meta">
+          @if (equipmentEvent.Employee is not null)
+          {
+            <span>@equipmentEvent.Employee.FullName</span>
+          }
+          <time>@equipmentEvent.OccurredAt.ToLocalTime().ToString("MMM d, yyyy HH:mm")</time>
+        </div>
+      </div>
+    </li>
+  }
+  </ol>
+</section>

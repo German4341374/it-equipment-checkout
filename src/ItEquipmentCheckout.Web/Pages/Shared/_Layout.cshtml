@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="IT equipment checkout and return tracking" />
+  <title>@ViewData["Title"] · IT Checkout</title>
+  <link rel="icon" href="~/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" asp-page="/Index">
+      <span class="brand-mark">IT</span>
+      <span>Equipment Checkout</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a asp-page="/Index">Dashboard</a>
+      <a asp-page="/Equipment/Index">Equipment</a>
+      <a asp-page="/Employees/Index">Employees</a>
+      <a asp-page="/Checkouts/Overdue">Overdue</a>
+      <a asp-page="/Events/Index">Event log</a>
+      <a href="/swagger">API</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    @if (TempData["Success"] is string success)
+    {
+      <div class="alert alert-success" role="status">@success</div>
+    }
+    @if (TempData["Error"] is string error)
+    {
+      <div class="alert alert-error" role="alert">@error</div>
+    }
+    @RenderBody()
+  </main>
+
+  <footer>
+    <span>Local portfolio application</span>
+    <a href="/health">Health</a>
+    <a href="https://github.com/German4341374/it-equipment-checkout">Source</a>
+  </footer>
+</body>
+</html>

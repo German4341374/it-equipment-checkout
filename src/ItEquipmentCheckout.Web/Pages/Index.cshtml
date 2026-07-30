@@ -1,0 +1,117 @@
+@page
+@model IndexModel
+@{
+  ViewData["Title"] = "Dashboard";
+}
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Inventory operations</p>
+    <h1>Know where every device is.</h1>
+    <p>Issue equipment, manage returns, and spot overdue assets from one lightweight workspace.</p>
+  </div>
+  <a class="button button-primary" asp-page="/Equipment/Create">Add equipment</a>
+</section>
+
+<section class="metric-grid" aria-label="Inventory summary">
+  <article class="metric-card metric-total">
+    <span>Total equipment</span>
+    <strong>@Model.TotalEquipment</strong>
+    <small>Tracked assets</small>
+  </article>
+  <article class="metric-card metric-available">
+    <span>Available</span>
+    <strong>@Model.Available</strong>
+    <small>Ready to issue</small>
+  </article>
+  <article class="metric-card metric-checked">
+    <span>Checked out</span>
+    <strong>@Model.CheckedOut</strong>
+    <small>With employees</small>
+  </article>
+  <article class="metric-card metric-repair">
+    <span>In repair</span>
+    <strong>@Model.Repair</strong>
+    <small>Temporarily blocked</small>
+  </article>
+  <article class="metric-card metric-overdue">
+    <span>Overdue</span>
+    <strong>@Model.Overdue</strong>
+    <small><a asp-page="/Checkouts/Overdue">Needs attention</a></small>
+  </article>
+</section>
+
+<div class="content-grid">
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Latest activity</p>
+        <h2>Recent checkouts</h2>
+      </div>
+      <a asp-page="/Equipment/Index" asp-route-status="CheckedOut">View equipment</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Equipment</th><th>Employee</th><th>Due</th><th>State</th></tr>
+        </thead>
+        <tbody>
+        @foreach (Checkout checkout in Model.RecentCheckouts)
+        {
+          bool overdue = checkout.IsOverdue(DateTime.UtcNow);
+          <tr>
+            <td>
+              <a asp-page="/Equipment/Details" asp-route-id="@checkout.EquipmentId">
+                @checkout.Equipment.InventoryNumber
+              </a>
+              <small>@checkout.Equipment.Manufacturer @checkout.Equipment.Model</small>
+            </td>
+            <td>@checkout.Employee.FullName</td>
+            <td>@checkout.PlannedReturnDate.ToString("MMM d, yyyy")</td>
+            <td>
+              @if (checkout.ActualReturnDate.HasValue)
+              {
+                <span class="status status-available">Returned</span>
+              }
+              else if (overdue)
+              {
+                <span class="status status-overdue">Overdue</span>
+              }
+              else
+              {
+                <span class="status status-checked-out">Active</span>
+              }
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <aside class="panel event-panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Audit trail</p>
+        <h2>Recent events</h2>
+      </div>
+      <a asp-page="/Events/Index">Full log</a>
+    </div>
+    <ol class="timeline">
+    @foreach (EquipmentEvent equipmentEvent in Model.RecentEvents)
+    {
+      <li>
+        <span class="timeline-dot"></span>
+        <div>
+          <strong>@UiText.EventType(equipmentEvent.Type)</strong>
+          <a asp-page="/Equipment/Details" asp-route-id="@equipmentEvent.EquipmentId">
+            @equipmentEvent.Equipment.InventoryNumber
+          </a>
+          <p>@equipmentEvent.Description</p>
+          <time>@equipmentEvent.OccurredAt.ToLocalTime().ToString("MMM d, HH:mm")</time>
+        </div>
+      </li>
+    }
+    </ol>
+  </aside>
+</div>

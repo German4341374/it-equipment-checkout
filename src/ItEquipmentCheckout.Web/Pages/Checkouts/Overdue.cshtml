@@ -1,0 +1,50 @@
+@page
+@model ItEquipmentCheckout.Web.Pages.Checkouts.OverdueModel
+@{
+  ViewData["Title"] = "Overdue returns";
+}
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Exceptions</p>
+    <h1>Overdue returns</h1>
+    <p>Active checkouts whose planned return date has passed.</p>
+  </div>
+  <span class="count-badge">@Model.Items.Count overdue</span>
+</div>
+
+<section class="panel">
+  @if (Model.Items.Count == 0)
+  {
+    <div class="empty-state">
+      <h2>No overdue equipment</h2>
+      <p>Every active checkout is currently within its expected return window.</p>
+    </div>
+  }
+  else
+  {
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Equipment</th><th>Employee</th><th>Checked out</th><th>Due</th><th>Late by</th></tr></thead>
+        <tbody>
+        @foreach (Checkout checkout in Model.Items)
+        {
+          int daysLate = (DateTime.UtcNow.Date - checkout.PlannedReturnDate.Date).Days;
+          <tr>
+            <td>
+              <a asp-page="/Equipment/Details" asp-route-id="@checkout.EquipmentId">
+                <strong>@checkout.Equipment.InventoryNumber</strong>
+              </a>
+              <small>@checkout.Equipment.Manufacturer @checkout.Equipment.Model</small>
+            </td>
+            <td>@checkout.Employee.FullName<small>@checkout.Employee.Department</small></td>
+            <td>@checkout.CheckoutDate.ToString("MMM d, yyyy")</td>
+            <td class="text-danger">@checkout.PlannedReturnDate.ToString("MMM d, yyyy")</td>
+            <td><span class="status status-overdue">@daysLate day@(daysLate == 1 ? "" : "s")</span></td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

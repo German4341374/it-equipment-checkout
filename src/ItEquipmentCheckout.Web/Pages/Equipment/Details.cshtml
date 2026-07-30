@@ -1,0 +1,144 @@
+@page "{id:guid}"
+@model ItEquipmentCheckout.Web.Pages.Equipment.DetailsModel
+@{
+  ViewData["Title"] = Model.Item.InventoryNumber;
+  Checkout? active = Model.ActiveCheckout;
+}
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">@UiText.Category(Model.Item.Category)</p>
+    <h1>@Model.Item.InventoryNumber</h1>
+    <p>@Model.Item.Manufacturer @Model.Item.Model</p>
+  </div>
+  <div class="button-row">
+    <span class="status status-large @UiText.StatusClass(Model.Item.Status)">@UiText.Status(Model.Item.Status)</span>
+    <a class="button button-ghost" asp-page="/Equipment/Index">Back</a>
+  </div>
+</div>
+
+<div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+<div class="details-grid">
+  <section class="panel">
+    <div class="panel-heading"><h2>Asset details</h2></div>
+    <dl class="detail-list">
+      <div><dt>Inventory number</dt><dd>@Model.Item.InventoryNumber</dd></div>
+      <div><dt>Serial number</dt><dd>@Model.Item.SerialNumber</dd></div>
+      <div><dt>Category</dt><dd>@UiText.Category(Model.Item.Category)</dd></div>
+      <div><dt>Expected return</dt><dd>@Model.Item.ExpectedReturnDays days</dd></div>
+      <div><dt>Created</dt><dd>@Model.Item.CreatedAt.ToLocalTime().ToString("MMM d, yyyy")</dd></div>
+      <div><dt>Last changed</dt><dd>@Model.Item.UpdatedAt.ToLocalTime().ToString("MMM d, yyyy HH:mm")</dd></div>
+    </dl>
+  </section>
+
+  <section class="panel action-panel">
+    @if (Model.Item.Status == EquipmentStatus.Available)
+    {
+      <div class="panel-heading">
+        <div><p class="eyebrow">Assignment</p><h2>Check out equipment</h2></div>
+      </div>
+      <form method="post" asp-page-handler="Checkout">
+        <label>
+          Employee
+          <select asp-for="CheckoutForm.EmployeeId">
+            <option value="">Select an employee</option>
+            @foreach (Employee employee in Model.Employees)
+            {
+              <option value="@employee.Id">@employee.FullName · @employee.Department</option>
+            }
+          </select>
+          <span asp-validation-for="CheckoutForm.EmployeeId"></span>
+        </label>
+        <label>
+          Planned return date
+          <input asp-for="CheckoutForm.PlannedReturnDate" type="date" />
+          <span asp-validation-for="CheckoutForm.PlannedReturnDate"></span>
+        </label>
+        <label>
+          Notes
+          <textarea asp-for="CheckoutForm.Notes" rows="3" placeholder="Optional assignment context"></textarea>
+          <span asp-validation-for="CheckoutForm.Notes"></span>
+        </label>
+        <button class="button button-primary button-block" type="submit">Check out</button>
+      </form>
+    }
+    else if (active is not null)
+    {
+      bool overdue = active.IsOverdue(DateTime.UtcNow);
+      <div class="panel-heading">
+        <div><p class="eyebrow">Current checkout</p><h2>@active.Employee.FullName</h2></div>
+        @if (overdue)
+        {
+          <span class="status status-overdue">Overdue</span>
+        }
+      </div>
+      <dl class="detail-list compact">
+        <div><dt>Department</dt><dd>@active.Employee.Department</dd></div>
+        <div><dt>Checkout date</dt><dd>@active.CheckoutDate.ToString("MMM d, yyyy")</dd></div>
+        <div><dt>Planned return</dt><dd class="@(overdue ? "text-danger" : "")">@active.PlannedReturnDate.ToString("MMM d, yyyy")</dd></div>
+        <div><dt>Notes</dt><dd>@(string.IsNullOrWhiteSpace(active.Notes) ? "—" : active.Notes)</dd></div>
+      </dl>
+      <form method="post" asp-page-handler="Return" class="inline-action">
+        <input type="hidden" name="checkoutId" value="@active.Id" />
+        <label>
+          Actual return date
+          <input asp-for="ReturnDate" type="date" />
+        </label>
+        <button class="button button-primary" type="submit">Return equipment</button>
+      </form>
+    }
+    else if (Model.Item.Status == EquipmentStatus.Repair)
+    {
+      <div class="panel-heading"><h2>Repair in progress</h2></div>
+      <p>This equipment is blocked from checkout until repair is completed.</p>
+      <form method="post" asp-page-handler="Available">
+        <button class="button button-primary button-block" type="submit">Mark available</button>
+      </form>
+    }
+    else
+    {
+      <div class="empty-state">
+        <h2>Equipment retired</h2>
+        <p>Retired equipment remains in the audit history and cannot be checked out.</p>
+      </div>
+    }
+  </section>
+</div>
+
+@if (Model.Item.Status is EquipmentStatus.Available or EquipmentStatus.Repair)
+{
+  <section class="panel lifecycle-panel">
+    <div>
+      <p class="eyebrow">Lifecycle controls</p>
+      <h2>Change equipment state</h2>
+    </div>
+    <form method="post" class="lifecycle-actions">
+      <input asp-for="Reason" placeholder="Optional reason" />
+      @if (Model.Item.Status == EquipmentStatus.Available)
+      {
+        <button class="button button-warning" asp-page-handler="Repair" type="submit">Send to repair</button>
+      }
+      <button class="button button-danger" asp-page-handler="Retire" type="submit">Retire</button>
+    </form>
+  </section>
+}
+
+<section class="panel">
+  <div class="panel-heading">
+    <div><p class="eyebrow">Immutable trail</p><h2>Equipment event log</h2></div>
+  </div>
+  <ol class="timeline timeline-wide">
+  @foreach (EquipmentEvent equipmentEvent in Model.Item.Events.OrderByDescending(item => item.OccurredAt))
+  {
+    <li>
+      <span class="timeline-dot"></span>
+      <div>
+        <strong>@UiText.EventType(equipmentEvent.Type)</strong>
+        <p>@equipmentEvent.Description</p>
+        <time>@equipmentEvent.OccurredAt.ToLocalTime().ToString("MMM d, yyyy HH:mm")</time>
+      </div>
+    </li>
+  }
+  </ol>
+</section>

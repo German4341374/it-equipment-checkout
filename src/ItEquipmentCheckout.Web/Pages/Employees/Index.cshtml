@@ -1,0 +1,71 @@
+@page
+@model ItEquipmentCheckout.Web.Pages.Employees.IndexModel
+@{
+  ViewData["Title"] = "Employees";
+}
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Directory</p>
+    <h1>Employees</h1>
+    <p>Maintain the people who can receive company equipment.</p>
+  </div>
+</div>
+
+<div class="content-grid employee-grid">
+  <section class="panel">
+    <div class="panel-heading">
+      <h2>@Model.Employees.Count employee(s)</h2>
+      <form method="get" class="compact-search">
+        <input asp-for="Search" placeholder="Search employees" />
+        <button class="button button-secondary" type="submit">Search</button>
+      </form>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Employee</th><th>Department</th><th>Email</th><th>Active items</th></tr></thead>
+        <tbody>
+        @foreach (Employee employee in Model.Employees)
+        {
+          <tr>
+            <td><strong>@employee.FullName</strong><small>#@employee.EmployeeNumber</small></td>
+            <td>@employee.Department</td>
+            <td><a href="mailto:@employee.Email">@employee.Email</a></td>
+            <td>@employee.Checkouts.Count(checkout => checkout.ActualReturnDate is null)</td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <aside class="panel sticky-panel">
+    <div class="panel-heading">
+      <div><p class="eyebrow">New record</p><h2>Add employee</h2></div>
+    </div>
+    <form method="post">
+      <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+      <label>
+        Employee number
+        <input asp-for="Input.EmployeeNumber" placeholder="1042" />
+        <span asp-validation-for="Input.EmployeeNumber"></span>
+      </label>
+      <label>
+        Full name
+        <input asp-for="Input.FullName" />
+        <span asp-validation-for="Input.FullName"></span>
+      </label>
+      <label>
+        Email
+        <input asp-for="Input.Email" type="email" placeholder="name@example.test" />
+        <span asp-validation-for="Input.Email"></span>
+      </label>
+      <label>
+        Department
+        <input asp-for="Input.Department" />
+        <span asp-validation-for="Input.Department"></span>
+      </label>
+      <button class="button button-primary button-block" type="submit">Add employee</button>
+    </form>
+  </aside>
+</div>
