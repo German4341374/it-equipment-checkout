@@ -1,0 +1,14 @@
+.git
+.github
+.tools
+**/bin
+**/obj
+artifacts
+TestResults
+coverage
+data
+*.db
+*.db-shm
+*.db-wal
+.env
+docs/screenshots

@@ -1,0 +1,32 @@
+name: it-equipment-checkout
+
+services:
+  app:
+    build:
+      context: .
+    image: it-equipment-checkout:local
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__CheckoutDatabase: "Data Source=/app/data/checkout.db"
+      Database__Seed: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - checkout_data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:8080/health" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  checkout_data:
