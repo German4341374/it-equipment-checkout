@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ItEquipmentCheckout.Core/ItEquipmentCheckout.Core.csproj" />
+    <Project Path="src/ItEquipmentCheckout.Web/ItEquipmentCheckout.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ItEquipmentCheckout.UnitTests/ItEquipmentCheckout.UnitTests.csproj" />
+    <Project Path="tests/ItEquipmentCheckout.IntegrationTests/ItEquipmentCheckout.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,16 @@
+.tools/
+**/bin/
+**/obj/
+artifacts/
+TestResults/
+coverage/
+*.db
+*.db-shm
+*.db-wal
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
+.DS_Store
+.env
