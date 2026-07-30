@@ -1,0 +1,4 @@
+inventoryNumber,category,manufacturer,model,serialNumber,expectedReturnDays
+LT-2001,Laptop,Framework,Laptop 13,DEMO-LT-2001,30
+MN-2001,Monitor,Dell,UltraSharp 27,DEMO-MN-2001,90
+HS-2001,Headset,Jabra,Evolve2 65,DEMO-HS-2001,14
