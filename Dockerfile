@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0.302-alpine3.24@sha256:979da27fc87dc255f4675b7642556cdcba9307459f8891f85f3cc26edcd7e766 AS build
 
 WORKDIR /src
-COPY global.json Directory.Build.props ItEquipmentCheckout.slnx ./
+COPY .editorconfig global.json Directory.Build.props ItEquipmentCheckout.slnx ./
 COPY src/ItEquipmentCheckout.Core/ItEquipmentCheckout.Core.csproj src/ItEquipmentCheckout.Core/packages.lock.json src/ItEquipmentCheckout.Core/
 COPY src/ItEquipmentCheckout.Web/ItEquipmentCheckout.Web.csproj src/ItEquipmentCheckout.Web/packages.lock.json src/ItEquipmentCheckout.Web/
 RUN --mount=type=cache,target=/root/.nuget/packages \
