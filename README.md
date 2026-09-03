@@ -341,7 +341,7 @@ Please report vulnerabilities according to [SECURITY.md](SECURITY.md).
 - Startup migrations are convenient for a single local instance; larger deployments should run migrations as a separate release step.
 - SQLite allows only one write transaction at a time and is not intended for horizontal scaling.
 
-## Future improvements
+## Possible next steps
 
 - Add cursor pagination and richer sorting.
 - Add optimistic concurrency tokens to edit workflows.
