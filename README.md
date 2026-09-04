@@ -6,7 +6,7 @@
 
 IT Equipment Checkout is a compact inventory and lending application for laptops, monitors, headsets, and other workplace equipment. It combines a responsive Razor Pages interface with a documented REST API, SQLite persistence, explicit domain rules, automated tests, and a hardened container image.
 
-The project is intentionally focused: it has no accounts, roles, email, or external services. It is suitable for a small trusted team or as a portfolio demonstration of full-stack ASP.NET Core development.
+The project is intentionally focused: it has no accounts, roles, email, or external services. It is suitable for a small trusted team and keeps the full ASP.NET Core stack easy to inspect locally.
 
 ## Features
 
