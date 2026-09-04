@@ -16,10 +16,12 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
       --output /app/publish \
       /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0.10-alpine3.24@sha256:eb7c0c9ef04479bfff191036f6b8959a7d6bac983bd7160c6b8b84b20d3ad0e7
+FROM mcr.microsoft.com/dotnet/aspnet:10.0.11-alpine3.24@sha256:c4b29bf368004ad9076c1ab9bc91fb373561e3905b4345637e14e8b8c57e3be8
 
 WORKDIR /app
-RUN mkdir -p /app/data && chown -R "$APP_UID:0" /app
+RUN apk upgrade --no-cache && \
+    mkdir -p /app/data && \
+    chown -R "$APP_UID:0" /app
 COPY --from=build --chown=$APP_UID:0 /app/publish .
 
 ENV ASPNETCORE_HTTP_PORTS=8080 \

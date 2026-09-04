@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Security fixes are applied to the latest commit on `main`. This portfolio project does not maintain older release branches.
+Security fixes are applied to the latest commit on `main`; older release branches are not maintained.
 
 ## Reporting a vulnerability
 
