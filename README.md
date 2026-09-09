@@ -4,9 +4,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4)](global.json)
 
-IT Equipment Checkout is a compact inventory and lending application for laptops, monitors, headsets, and other workplace equipment. It combines a responsive Razor Pages interface with a documented REST API, SQLite persistence, explicit domain rules, automated tests, and a hardened container image.
+A small app for lending out laptops, monitors, headsets, and other equipment.
+Record who took an item and when it's due back, then mark it returned when it comes in.
+The app stops the same item being checked out twice and highlights overdue returns.
 
-The project is intentionally focused: it has no accounts, roles, email, or external services. It is suitable for a small trusted team and keeps the full ASP.NET Core stack easy to inspect locally.
+It has a web interface, a REST API, and CSV import and export. There are no user accounts
+or access roles, so keep it on a trusted local network.
 
 ## Features
 
