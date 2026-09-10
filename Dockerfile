@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.10
-FROM mcr.microsoft.com/dotnet/sdk:10.0.302-alpine3.24@sha256:979da27fc87dc255f4675b7642556cdcba9307459f8891f85f3cc26edcd7e766 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0.401-alpine3.24@sha256:4ac537e13e2f55d1d588ed3e618cb0cb6b82dd8deb17830de43d5086fbde958b AS build
 
 WORKDIR /src
 COPY .editorconfig global.json Directory.Build.props ItEquipmentCheckout.slnx ./
