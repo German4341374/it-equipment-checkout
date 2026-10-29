@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
       --output /app/publish \
       /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0.11-alpine3.24@sha256:c4b29bf368004ad9076c1ab9bc91fb373561e3905b4345637e14e8b8c57e3be8
+FROM mcr.microsoft.com/dotnet/aspnet:10.0.14-alpine3.24@sha256:254fe017495996d3abcc487ffacdcce2b73affb380d3af87af12c8dff41fe0b0
 
 WORKDIR /app
 RUN apk upgrade --no-cache && \
